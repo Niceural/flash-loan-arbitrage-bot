@@ -3,17 +3,15 @@ pragma solidity =0.8.10;
 
 import "@aave/core-v3/contracts/flashloan/base/FlashLoanReceiverBase.sol";
 import "@aave/core-v3/contracts/interfaces/IPoolAddressesProvider.sol";
-import "./interface/IArbitrage.sol";
-import "./interface/IERC20.sol";
-import "./utils/Withdrawable.sol";
+import "../Arbitrage/IArbitrage.sol";
+import "./Withdrawable.sol";
 
 contract AaveV3FlashLoan is FlashLoanReceiverBase, Withdrawable {
     IArbitrage private s_arbitrageContract;
 
-    constructor(
-        address _poolAddressesProvider, 
-        address _arbitrageAddress
-    ) FlashLoanReceiverBase(IPoolAddressesProvider(_poolAddressesProvider)) {
+    constructor(address _poolAddressesProvider, address _arbitrageAddress)
+        FlashLoanReceiverBase(IPoolAddressesProvider(_poolAddressesProvider))
+    {
         s_arbitrageContract = IArbitrage(_arbitrageAddress);
     }
 
@@ -24,6 +22,7 @@ contract AaveV3FlashLoan is FlashLoanReceiverBase, Withdrawable {
         address initiator,
         bytes calldata params
     ) external override returns (bool) {
+        // execute arbitrage logic
         s_arbitrageContract.takeArbitrage(assets, amounts, params);
 
         // Approve the LendingPool contract allowance to *pull* the owed amount
@@ -31,7 +30,7 @@ contract AaveV3FlashLoan is FlashLoanReceiverBase, Withdrawable {
             uint256 amountOwing = amounts[i] + premiums[i];
             IERC20(assets[i]).approve(address(POOL), amountOwing);
         }
-        
+
         return true;
     }
 
@@ -48,19 +47,7 @@ contract AaveV3FlashLoan is FlashLoanReceiverBase, Withdrawable {
             modes[i] = 0;
         }
 
-        POOL.flashLoan(
-            receiverAddress, 
-            assets, 
-            amounts, 
-            modes, 
-            onBehalfOf,
-            params,
-            referralCode
-        );
-    }
-
-    function getArbitrage() public view returns (address) {
-        return address(s_arbitrageContract);
+        POOL.flashLoan(receiverAddress, assets, amounts, modes, onBehalfOf, params, referralCode);
     }
 
     function setArbitrage(address _arbitrageAddress) public onlyOwner {

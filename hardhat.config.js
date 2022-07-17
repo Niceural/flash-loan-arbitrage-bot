@@ -23,7 +23,10 @@ const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || "";
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
 const REPORT_GAS = true;
 
-const AAVE_SETTING = {
+const AAVE_V2_SETTING = {
+    version: "0.6.12",
+};
+const AAVE_V3_SETTING = {
     version: "0.8.10",
 };
 const UNISWAP_SETTING = {
@@ -70,7 +73,7 @@ module.exports = {
     },
 
     solidity: {
-        compilers: [AAVE_SETTING, UNISWAP_SETTING],
+        compilers: [AAVE_V3_SETTING, AAVE_V2_SETTING, UNISWAP_SETTING],
     },
 
     gasReporter: {

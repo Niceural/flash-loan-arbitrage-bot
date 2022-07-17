@@ -3,7 +3,7 @@ const { abi: IUniswapV2FactoryABI } = require("@uniswap/v2-core/build/IUniswapV2
 const { network, ethers } = require("hardhat");
 const { networkConfig } = require("../../helper-hardhat-config");
 
-class UniswapV2Pair {
+module.exports = class UniswapV2Pair {
     constructor(pairAddr, id, log) {
         if (pairAddr == null) throw new TypeError("Expected pair address but got zero address.");
         this.__pairAddr = pairAddr;
@@ -110,8 +110,4 @@ class UniswapV2Pair {
         console.log("   Price1CumulativeLast: ", this.__pairState.price1CumulativeLast);
         console.log(`   klast: ${this.__pairState.klast}.\n`);
     }
-}
-
-async function createSushiPairs(log) {
-    console.log("Creating js sushiswap pairs...");
-}
+};

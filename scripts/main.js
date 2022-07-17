@@ -1,15 +1,21 @@
 "use strict";
 const { network, ethers } = require("hardhat");
 const { networkConfig } = require("../helper-hardhat-config");
-const { createUniswapPools } = require("./uniswap/uniV3Pools");
+const { createPoolsAndPairs } = require("./fetchPrices/createPoolsAndPairs");
 
 async function main() {
-    const pools = await createUniswapPools(true);
+    // check hardhat config
+    console.log("Checking hardhat config...");
+    const chainId = network.config.chainId;
+    if (chainId == null) throw new Error('Invalid chainId, check your "hardhat.config.js"');
+    const rpc = network.name === "hardhat" ? network.config.forking.url : network.config.url;
+    if (rpc == null) throw new Error('Invalid RPC provider, check ".env" and "hardhat.config.js"');
+    const provider = new ethers.providers.JsonRpcProvider(rpc);
+    const log = true;
 
-    for (let i = 0; i < pools.length; i++) {
-        await pools[i].fetchPoolState();
-    }
-    console.log(pools[0].token1Token0Price());
+    // instantiate Uniswap and Sushiswap pools and pairs
+    console.log("Instantiating Uniswap and Sushiswap Pools and Pairs...");
+    const pools = await createPoolsAndPairs(provider, networkConfig[chainId], log);
 }
 
 main()

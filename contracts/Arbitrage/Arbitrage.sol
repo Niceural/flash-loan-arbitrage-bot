@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity =0.8.10;
+pragma solidity 0.8.10;
+/*
 
-import "./interface/IArbitrage.sol";
+import "./IArbitrage.sol";
 
 contract Arbitrage is IArbitrage {
     address[] s_assets;
@@ -14,14 +15,12 @@ contract Arbitrage is IArbitrage {
         address[] calldata assets,
         uint256[] calldata amounts,
         bytes calldata params
-    ) external override {
-
-    }
+    ) external override {}
 
     function _uniV3SwapSingle(
-        address tokenIn, 
-        address tokenOut, 
-        uint256 amountIn, 
+        address tokenIn,
+        address tokenOut,
+        uint256 amountIn,
         uint24 poolFee
     ) internal returns (uint256 amountOut) {
         // transfer the specified amount of tokenIn to this contract
@@ -31,24 +30,21 @@ contract Arbitrage is IArbitrage {
         TransferHelper.safeApprove(tokenIn, address(swapRouter), amountIn);
 
         // swap input params
-        ISwapRouter.ExactInputSingleParams memory params = 
-            ISwapRouter.ExactInputSingleParams({
-                tokenIn: tokenIn,
-                tokenOut: tokenOut,
-                fee: poolFee,
-                recipient: msg.sender,
-                deadline: block.timestamp,
-                amountIn: amountIn,
-                amountOutMinimum: 0,
-                sqrtPriceLimitX96: 0
-            });
+        ISwapRouter.ExactInputSingleParams memory params = ISwapRouter.ExactInputSingleParams({
+            tokenIn: tokenIn,
+            tokenOut: tokenOut,
+            fee: poolFee,
+            recipient: msg.sender,
+            deadline: block.timestamp,
+            amountIn: amountIn,
+            amountOutMinimum: 0,
+            sqrtPriceLimitX96: 0
+        });
 
         // execute the swap
         amountOut = swapRouter.exactInputSingle(params);
     }
 
-    function _uniV3SwapMultihop(
-        address[] assets,
-        address[] amounts
-    ) internal {}
+    function _uniV3SwapMultihop(address[] assets, address[] amounts) internal {}
 }
+*/
